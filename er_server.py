@@ -4,6 +4,12 @@ import sys
 import redis
 import json
 import multiprocessing
+import gcm
+
+#Configuration
+HOST = "localhost"
+PORT = 1234
+GCM_SECRET = ""
 
 
 #Signal handler method
