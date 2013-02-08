@@ -7,29 +7,43 @@ import multiprocessing
 import gcm
 
 #Configuration
-HOST = "localhost"
-PORT = 1234
+REDIS_HOST = "localhost"
+REDIS_PORT = 6379
+LISTENING_PORT = 1234
 GCM_SECRET = ""
 
+#Print error method
+def printError(ErrorType):
+  sys.stderr.write("\nEXCEPTION: Caught "+ErrorType+" error.\n")
 
 #Signal handler method
+#TODO Nice handling of signals
 def sigHandler(signal, frame):
-  dispatch_process.terminate()
+  try:
+    dispatch_process.terminate()
+    dispatch_process.join() 
 
-  server_process.terminate()
-  server_process.join()
+    server_process.terminate()
+    server_process.join()
+  except:
+    printError("PROCESS SHUTDOWN")
 
+  print "Shutting down..."
   sys.exit(0)
 
 #Class to write to redis server
 class RedisWriter(SocketServer.BaseRequestHandler):
 
   def handle(self):
-    self.data = self.request.recv(1024).strip()
-    #TODO Catch exceptions
-    #TODO Deal with key for event
-    redisServ.set('alert1',self.data)
-    redisServ.publish('alertchannel','alert1')
+    try:
+      self.data = self.request.recv(1024).strip()
+    except:
+      printError("NO CONNECTION TO CLIENT")
+      #TODO Deal with key for event
+    if self.data is not None:
+      redisServ.set('alert1',self.data)
+      redisServ.publish('alertchannel','alert1')
+  
 
 #Method for dispatching events to GCM
 def event_dispatcher():
@@ -41,10 +55,11 @@ def event_dispatcher():
      for msgDict in ps.listen():
         keyValueData = redisServ.get(msgDict['data'])
         if keyValueData is not None:
-          print " %s keyValueData" % keyValueData
-          eventData = json.loads(keyValueData)
-          print eventData['kalle']
-
+          try:
+            eventData = json.loads(keyValueData)
+          except:
+            printError("MALFORMED JSON")
+          #TODO deal with eventData['someKey']
 
 if __name__ == "__main__":
 
@@ -52,12 +67,18 @@ if __name__ == "__main__":
   signal.signal(signal.SIGINT,sigHandler)    
 
   #Init connection to Redis Server
-  redisServ = redis.StrictRedis(host='localhost',port=6379, db=0)
+  redisServ = redis.StrictRedis(host=REDIS_HOST,port=REDIS_PORT, db=0)
    
 
   #Init TCP listening socket and launch process
-  HOST,PORT = "localhost", 1234
-  server = SocketServer.TCPServer((HOST, PORT), RedisWriter)
+  try:
+    server = SocketServer.TCPServer(("localhost", LISTENING_PORT), RedisWriter)
+  except:
+    printError("BUSY SOCKET")
+    print "Socket is busy. Maybe you already have an instance of er_server.py running?"
+    sys.exit(1)
+
+  #Init and launch server process
   server_process = multiprocessing.Process(target=server.serve_forever)
   server_process.daemon = True
   server_process.start()
