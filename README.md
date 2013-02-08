@@ -13,12 +13,11 @@ Usage
 ===
 First make sure that an instance of Redis is running.
 
-To start the two server components, call the following python scripts:
+To start the server component run the python script:
 ````
-message_writer.py
+python er_server.py
 ````
-````
-event_dispatcher.py
+
 ````
 
 to be continued...
