@@ -37,12 +37,11 @@ Server
 * Add support for several clients.
 * Concentrate everything in an API.
 * Add proper sub/pub channels.
-* Merge both python scripts into one.
+
 
 Android application
 * Add sensible picture to report event ImageButton.
 * Add support for GCM intents.
 * Add configuration file for server information etc.
-* 
 
 
