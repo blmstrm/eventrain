@@ -38,6 +38,8 @@ Server
 * Add a resonable data structure for location information.
 * Add support for several clients.
 * Concentrate everything in an API.
+* Add proper sub/pub channels.
+* Merge both python scripts into one.
 
 Android application
 * Add sensible picture to report event ImageButton.
