@@ -31,7 +31,6 @@ Server
 * Add support for regions in server.
 * Add correct parsing of longitude/latitude.
 * Add support for GCM.
-* Add configuration file for settings.
 * Add a resonable data structure for device identification.
 * Add a resonable data structure for location information.
 * Add support for several clients.
