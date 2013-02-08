@@ -18,7 +18,6 @@ To start the server component run the python script:
 python er_server.py
 ````
 
-````
 
 to be continued...
 
