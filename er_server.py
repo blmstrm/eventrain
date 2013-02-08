@@ -31,20 +31,6 @@ def sigHandler(signal, frame):
   print "Shutting down..."
   sys.exit(0)
 
-#Class to write to redis server
-class RedisWriter(SocketServer.BaseRequestHandler):
-
-  def handle(self):
-    try:
-      self.data = self.request.recv(1024).strip()
-    except:
-      printError("NO CONNECTION TO CLIENT")
-      #TODO Deal with key for event
-    if self.data is not None:
-      redisServ.set('alert1',self.data)
-      redisServ.publish('alertchannel','alert1')
-  
-
 #Method for dispatching events to GCM
 def event_dispatcher():
 
@@ -60,6 +46,20 @@ def event_dispatcher():
           except:
             printError("MALFORMED JSON")
           #TODO deal with eventData['someKey']
+
+#Class to write to redis server
+class RedisWriter(SocketServer.BaseRequestHandler):
+
+  def handle(self):
+    try:
+      self.data = self.request.recv(1024).strip()
+    except:
+      printError("NO CONNECTION TO CLIENT")
+      #TODO Deal with key for event
+    if self.data is not None:
+      redisServ.set('alert1',self.data)
+      redisServ.publish('alertchannel','alert1')
+  
 
 if __name__ == "__main__":
 
