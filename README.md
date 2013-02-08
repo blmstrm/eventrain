@@ -13,6 +13,8 @@ Usage
 ===
 First make sure that an instance of Redis is running.
 
+Adapt the parameters at the top of er_server.py.
+
 To start the server component run the python script:
 ````
 python er_server.py

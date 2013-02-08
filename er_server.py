@@ -10,7 +10,7 @@ import gcm
 REDIS_HOST = "localhost"
 REDIS_PORT = 6379
 LISTENING_PORT = 1234
-GCM_SECRET = ""
+GCM_SECRET = "YOUR_API_KEY"
 
 #Print error method
 def printError(ErrorType):
